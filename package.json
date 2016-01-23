@@ -1,0 +1,16 @@
+{
+  "title": "MediaSource Recorder",
+  "name": "mediasource-recorder",
+  "version": "0.0.1",
+  "description": "Records HTML5 video being sent using the MediaSource APIs",
+  "main": "index.js",
+  "author": "h2g2bob",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "AGPLv3 or later",
+  "keywords": [
+    "jetpack"
+  ]
+}
