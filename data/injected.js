@@ -1,35 +1,18 @@
-// unsafeWindow: https://blog.mozilla.org/addons/2014/04/10/changes-to-unsafewindow-for-the-add-on-sdk/
-
-unsafeWindow.injected = false;
-
-// execute immediately, but in a closure so we can have local variables.
-if (unsafeWindow.MediaSource !== undefined) {
-
-
+if (unsafeWindow.SourceBuffer !== undefined) {
 	// make addSourceBuffer() return a wrapper object
-	var original_function = unsafeWindow.MediaSource.prototype.addSourceBuffer;
-	function replacement_function() {
-		alert("sourcebuffer");
-/*
-		var sourcebuffer = original_function.apply(this, arguments);
+	var original_append_buffer = unsafeWindow.SourceBuffer.prototype.appendBuffer;
+	exportFunction(original_append_buffer, unsafeWindow, {defineAs: "original_append_buffer"});
 
-		// wrap the appendBuffer function
-		var original_appendbuffer = sourcebuffer.appendBuffer;
-		sourcebuffer.appendBuffer = function () {
-			alert("appendBuffer " + this + ", " + arguments);
-			original_appendbuffer.apply(this, arguments);
-		}
+	function replacement_append_buffer(arraybuffer) {
+		console.log("appendBuffer " + arraybuffer.toString())
+		// self.port.emit("msr-chunk", arraybuffer);
 
-		alert("sourcebuffer " + sourcebuffer);
-		return sourcebuffer;
-*/
+		// this function returns void
+		unsafeWindow.original_append_buffer.apply(this, arguments);
+
+		return undefined;
 	};
 
-	exportFunction(replacement_function, unsafeWindow, {defineAs: "replacement_function"});
-	unsafeWindow.MediaSource.prototype.addSourceBuffer = unsafeWindow.replacement_function;
-
-	unsafeWindow.injected = true;
-	alert("injected " + unsafeWindow.MediaSource.prototype);
-
-
+	exportFunction(replacement_append_buffer, unsafeWindow, {defineAs: "replacement_append_buffer"});
+	unsafeWindow.SourceBuffer.prototype.appendBuffer = unsafeWindow.replacement_append_buffer;
 }
