@@ -2,7 +2,7 @@ var self = require('sdk/self');
 
 var chunk_receiver = function (worker) {
 	worker.port.on("msr-chunk", function(elementContent) {
-		console.log("msr-chunk " + elementContent);
+		console.log("msr-chunk " + elementContent.toString());
 	});
 }
 
