@@ -1,19 +1,20 @@
 
 function privileged_appendbuffer(arraybuffer) {
 	try {
-		// we might get a Uint8Array, which isn't serialized well when sent over self.port.emit
-		// so we want a real ArrayBuffer instead
-		if (arraybuffer.buffer !== undefined) {
-			arraybuffer = arraybuffer.buffer;
-		}
+		// TODO I'm assuming that arraybuffer is a Uint8Array,
+		// but technically it could be any ArrayBuffer!
 
 		// the original is in the page context scope, so we create a copy
 		var copy = cloneInto(arraybuffer, window);
 
 		console.log("appendBuffer " + copy.toString())
 
-		// XXX we can't send an ArrayBuffer over this interface?!
-		self.port.emit("msr-chunk", copy);
+		// we can't send ArrayBuffer (postMessage appears to support
+		// it, but content-script Port() requires it can be serialized
+		// to JSON.
+		var list_elements = Array.from(copy.values());
+
+		self.port.emit("msr-chunk", list_elements);
 	} catch (e) {
 		// if errors escape, the page won't have permissions to examine the contents of the error!
 		// and you'll get "cannot access attribute 'code'", where code is an attrinute of an error object.
